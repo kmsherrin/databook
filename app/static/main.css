@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600&display=swap');
+
+.hidden {
+  overflow: hidden !important;
+  height: 0;
+}
+
+.tags-list {
+  list-style: none;
+  margin: 0.2rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tags-list li {
+  margin: 0.2rem;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.tags-list button {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  padding: 0;
+  margin-right: 0.4rem;
+  padding-bottom: 0.2rem;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: white !important;
+  background-image: url("white_close.svg");
+  background-size: contain;
+}
+
+.tags-list button:hover {
+  background-color: #dc3545;
+
+}
+
+
+.tags-list input {
+  border: 0px;
+  display: flex;
+  text-align: center;
+  background-color: transparent;
+  color: white;
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+.transition {
+  transition: all;
+  transition-duration: 0.5s;
+}
+
+.article-block {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  margin: 0 1rem 0 0;
+}
+
+.article-img {
+  width: 100px;
+  height: 100px;
+}
+
+.article-block img {
+  width: 50px;
+  height: 50px;
+  margin: 0 1rem 0 0;
+}
+
+.article-block div {
+  flex: 1;
+}
+
+
+.article-title {
+  color: #222222;
+  text-decoration: none;
+}
+
+.article-content {
+  white-space: pre-line;
+  font-family: 'Segoe UI', sans-serif !important;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+.content-section {
+    background: #ffffff;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+  
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.search-bar {
+  width: 100%;
+  transition-property: all;
+  transition-duration: 0.5s;
+  margin-right: 0.3rem;
+}
+
+
+  
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+p {
+  font-family: 'Hind', sans-serif;
+}
+
+.mont {
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Add styling for the drag and drop functionality */
+
+#drop-area {
+  border: 1px dashed #ccc;
+  border-radius: 20px;
+  font-family: sans-serif;
+  padding: 20px;
+}
+#drop-area.highlight {
+  border-color: purple;
+}
+
+
+/* Add styling for a custom scrollbar */ 
+
+.custom_scrollb::-webkit-scrollbar {
+  width: 8px;
+}
+ 
+.custom_scrollb::-webkit-scrollbar-track {
+  background-color: rgb(230, 230, 230);
+}
+ 
+.custom_scrollb::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius:0.2rem;
+}
+
+@media (max-width: 600px) {
+  .post-head {
+    display: flex;
+    flex-direction: row;
+    background-color: teal;
+
+  }
+}

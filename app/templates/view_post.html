@@ -1,0 +1,354 @@
+{% extends "base.html" %} {% block content %}
+<div>
+  <section class="row">
+    <article class="content-section">
+      <div class="row">
+        <div class="col-1">
+          <div class="row">
+            <img
+              class="rounded-circle article-img"
+              src="{{ url_for('static', filename='images/profile_pictures/' + post.user.image_file) }}"
+              alt=""
+            />
+          </div>
+
+          <div class="row mt-4 d-flex justify-content-center">
+            <div class="d-flex justify-content-center align-items-center">
+              {% if post.likes.count() == 1 %}
+              <h6>{{post.likes.count()}} like</h6>
+              {% else %}
+              <h6>{{post.likes.count()}} likes</h6>
+              {% endif%}
+            </div>
+            <div class="d-flex justify-content-center align-items-center">
+              {% if current_user.is_authenticated %} {% if
+              current_user.has_liked_post(post) %}
+              <h6>
+                <a
+                  href="{{ url_for('users.like_action', post_id=post.id, action='unlike') }}"
+                  >Unlike</a
+                >
+              </h6>
+              {% else %}
+              <h6>
+                <a
+                  href="{{ url_for('users.like_action', post_id=post.id, action='like') }}"
+                  >Like</a
+                >
+              </h6>
+              {% endif %} {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-11">
+          <div class="row border-bottom pb-2">
+            <div class="col-6 d-flex align-items-center">
+              <a
+                class="mr-2"
+                href="{{ url_for('users.user_posts', username=post.user.username) }}"
+                >{{ post.user.username }}</a
+              >
+            </div>
+            <div class="col-6 d-flex align-items-center">
+              <small
+                title="Time: {{post.date_posted.strftime('%H:%M')}}"
+                class="text-muted ml-auto mr-1"
+                >Date Posted: {{ post.date_posted.strftime('%d/%m/%Y') }}</small
+              >
+              {% if post.user == current_user %}
+              <div style="flex: 0; display: flex">
+                <a
+                  class="btn btn-secondary btn-sm mt-1 mb-1"
+                  href="{{ url_for('posts.update_post', post_id=post.id)}}"
+                  >Update</a
+                >
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm m-1"
+                  data-toggle="modal"
+                  data-target="#delete-modal"
+                >
+                  Delete
+                </button>
+              </div>
+              {% endif%}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="d-flex align-items-center">
+              <h2 class="mt-4">
+                <a
+                  class="article-title"
+                  href="{{ url_for('posts.post', post_id=post.id) }}"
+                  >{{ post.title }}</a
+                >
+              </h2>
+              <div class="ml-auto">
+                <span class="badge rounded-pill bg-primary"
+                  >{{ post.category }}</span
+                >
+              </div>
+            </div>
+            <p class="article-content">{{ post.content|markdown }}</p>
+          </div>
+
+          <div class="row border-top mt-1 pt-3">
+            {% if post.comments.count() == 1 %}
+            <h5>
+              <a href="{{ url_for('posts.post', post_id=post.id) }}"
+                >{{post.comments.count()}} Comment</a
+              >
+            </h5>
+            {% else %}
+            <h5>
+              <a href="{{ url_for('posts.post', post_id=post.id) }}"
+                >{{post.comments.count()}} Comments</a
+              >
+            </h5>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="row dflex justify-content-center">
+    <div id="comments" class="col-md-10">
+      <legend class="border-bottom mb-4 mont right-align">
+        <a>Comments</a>
+      </legend>
+
+      {% if current_user.is_authenticated %}
+      <form id="add_comment_form" action="" method="POST" class="mb-3">
+        {{ comment_form.hidden_tag() }}
+        <fieldset class="form-group">
+          <div class="form-group mb-3">
+            {{ comment_form.comment.label(class="form-control-label") }} {{
+            comment_form.comment(class="form-control", rows="3") }}
+          </div>
+        </fieldset>
+        <div class="form-group mb-3">
+          {{ comment_form.submit(class="btn btn-primary float-right") }}
+        </div>
+      </form>
+
+      {% else %}
+      <p class="text-right">Please log in to post a comment 💬</p>
+      {% endif %}
+
+      <!-- This div holds all of the comments made on the post, it loops through each, also adding the replies -->
+      <div id="comments_list" class="mt-5">
+        {% for comment in comments %}
+        <div class="card-body content-section border rounded mb-2">
+          <div class="row mt-2">
+            <div class="col-md-2 text-center">
+              <img
+                class="rounded-circle"
+                src="{{ url_for('static', filename='images/profile_pictures/' + comment.user.image_file) }}"
+                alt=""
+                width="50"
+                height="50"
+              />
+              <p
+                class="mt-1"
+                title="Time: {{ comment.date_posted.strftime('%H:%M:%S')}}"
+              >
+                {{ comment.date_posted.strftime('%d/%m/%Y') }}
+              </p>
+            </div>
+            <div class="col-md-10">
+              <h3>{{ comment.user.username }}</h3>
+              <div class="clearfix">
+                <p>{{ comment.content }}</p>
+                {% if current_user.is_authenticated %}
+                <p>
+                  <a
+                    class="float-right btn text-white btn-secondary btn-sm m-1"
+                    onclick="toggle_like_button(this)"
+                  >
+                    <i class="fa fa-heart"></i> Like 👍</a
+                  >
+                  <a
+                    id="reply_expand_{{comment.id}}"
+                    onclick="expand_reply(this)"
+                    class="float-right btn text-white btn-secondary btn-sm m-1"
+                  >
+                    <i class="float-right"></i> Reply
+                  </a>
+                </p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- When the user is logged in, allow them to see the comment reply box -->
+          {% if current_user.is_authenticated %}
+          <form
+            action=""
+            method="POST"
+            id="reply_to_comment_{{comment.id}}"
+            class="transition"
+            style="overflow: hidden; height: 0"
+          >
+            {{ comment_reply_form.hidden_tag() }}
+            <fieldset class="form-group">
+              <div class="form-group mb-1">
+                {{ comment_reply_form.parent_comment(type="hidden",
+                value=comment.id)}} {{
+                comment_reply_form.content(class="form-control") }}
+              </div>
+            </fieldset>
+            <div class="form-group mb-1">
+              {{ comment_reply_form.submit(class="btn btn-primary btn-sm m-1
+              float-right") }}
+            </div>
+          </form>
+          {% endif %}
+
+          <!-- Div for holding the replies to a specific comment -->
+          <div
+            class="custom_scrollb transition pr-2"
+            id="comment_replies_{{comment.id}}"
+            style="overflow: hidden; height: auto; max-height: 0px"
+          >
+            {% for reply in comment_replies[comment.id] %}
+            <div class="row">
+              <div class="col-1"></div>
+              <div class="col-md-2 text-center">
+                <img
+                  class="rounded-circle"
+                  src="{{ url_for('static', filename='images/profile_pictures/' + reply.user.image_file) }}"
+                  alt=""
+                  width="30"
+                  height="30"
+                />
+                <p
+                  class="mt-1"
+                  title="Time: {{ reply.date_posted.strftime('%H:%M:%S')}}"
+                >
+                  {{ reply.date_posted.strftime('%d/%m/%Y') }}
+                </p>
+              </div>
+              <div class="col-md-9">
+                <h4>{{ reply.user.username }}</h4>
+                <div class="clearfix">
+                  <p>{{ reply.content }}</p>
+
+                  {% if current_user.is_authenticated %}
+                  <p>
+                    <a
+                      class="float-right btn text-white btn-secondary btn-sm m-1"
+                    >
+                      <i class="fa fa-heart"></i> Like 👍</a
+                    >
+                  </p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- The show existing replies button, which also shows the number of existing replies -->
+          <div class="text-center">
+            {% if comment_replies[comment.id].count() > 0 %}
+            <button
+              class="btn btn-outline-primary btn-sm"
+              id="replies_expand_{{comment.id}}"
+              onclick="expand_existing_replies(this)"
+            >
+              Show Replies ({{ comment_replies[comment.id].count() }})
+            </button>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  // Toggle the color of the like button to indicate state
+  function toggle_like_button(like_button) {
+    like_button.classList.toggle("btn-secondary");
+    like_button.classList.toggle("btn-primary");
+  }
+
+  // Function used to expand the reply textarea box allowing people to reply to comments
+  function expand_reply(reply_button) {
+    const comment_id = reply_button.id.split("_")[2];
+
+    const relevant_reply_div = document.getElementById(
+      "reply_to_comment_" + comment_id
+    );
+
+    if (relevant_reply_div.style.height !== "120px") {
+      relevant_reply_div.style.height = "120px";
+    } else {
+      relevant_reply_div.style.height = "0";
+    }
+  }
+
+  // Function user to expand the existing replies to comments
+  function expand_existing_replies(expand_button) {
+    const current_text = expand_button.textContent;
+
+    const comment_id = expand_button.id.split("_")[2];
+    const replies_div = document.getElementById(
+      "comment_replies_" + comment_id
+    );
+    console.log(replies_div.style.height);
+
+    if (replies_div.style.maxHeight != "0px") {
+      replies_div.style.maxHeight = "0";
+      replies_div.style.overflowY = "hidden";
+      expand_button.value = current_text.replace("Show", "Hide");
+    } else {
+      replies_div.style.maxHeight = "700px";
+      replies_div.style.overflowY = "auto";
+      expand_button.value = current_text.replace("Hide", "Show");
+    }
+  }
+</script>
+
+<!-- Delete Modal -->
+<div
+  class="modal fade"
+  id="delete-modal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="DeleteModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delete-modal-label">Delete Post?</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <form
+          action="{{ url_for('posts.delete_post', post_id=post.id)}}"
+          method="POST"
+        >
+          <input class="btn btn-danger" type="submit" value="Delete" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

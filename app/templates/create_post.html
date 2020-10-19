@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="content-section row d-flex justify-content-center">
+        <form action="" method="POST">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4 mont">{{ legend }}</legend>
+
+                <div class="form-group mb-3">
+                    {{ form.title.label(class="form-control-label") }}
+                    
+                    {% if form.title.errors %}
+                    {{ form.title(class="form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                
+                    {% else %}
+                        {{ form.title(class="form-control") }}
+                    {% endif %}
+
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form.content.label(class="form-control-label") }}
+                    
+                    {% if form.content.errors %}
+                    {{ form.content(class="form-control is-invalid", rows=5) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.content.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                
+                    {% else %}
+                        {{ form.content(class="form-control", rows=7) }}
+                    {% endif %}
+
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.category.label(class="form-control-label") }}
+                    
+                    {% if form.category.errors %}
+                    {{ form.category(class="form-control is-invalid", rows=5) }}
+                    <div class="invalid-feedback">
+                        {% for error in form.category.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                
+                    {% else %}
+                        {{ form.category(class="form-control", rows=7) }}
+                    {% endif %}
+
+                </div>
+                <div>
+                    {{ form.tags(class="tags-list") }}
+                </div>
+                <div>
+                    <p class="form-control-label">Tags <small>(separate with comma)</small></p>
+                    <input oninput="search_tags(this)" id="tags-input" class="form-control" type="text" maxlength="18"></input>
+                    <div id="tags-input-error" class="invalid-feedback" style="visibility: hidden;">
+                        <span>Maximum tag length reached</span>
+                    </div>
+                </div>
+
+            </fieldset>
+            <div class="form-group mt-1 mb-3 float-right">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+
+
+<script>
+var timer;
+function search_tags(input) {
+
+    if (input.value[input.value.length - 1] === ',') {
+        if (input.value.length > 3) {
+            const tag_input = input.value.substring(0, input.value.length - 1)
+            const tags_el = document.getElementById("tags")
+
+            var li = document.createElement("li");
+
+            li.setAttribute('class', 'badge rounded-pill bg-primary')
+            var input_tag = document.createElement("input");
+            input_tag.setAttribute('id', "tags-" + tags_el.children.length)
+            input_tag.setAttribute('type', "text")
+            input_tag.setAttribute('readonly', 'readonly')
+            input_tag.setAttribute('value', tag_input);
+            input_tag.setAttribute('name', "tags-" + tags_el.children.length)
+            //input_tag.setAttribute('class', 'badge rounded-pill bg-primary')
+            input_tag.appendChild(document.createTextNode(tag_input));
+            li.appendChild(input_tag)
+
+            var x_btn = document.createElement("button");
+            x_btn.setAttribute('class', 'btn btn-sm')
+            x_btn.setAttribute('onClick', 'remove_tag(this)')
+            x_btn.setAttribute('value', tag_input)
+            x_btn.setAttribute('type', 'button')
+            //x_btn.appendChild(document.createElement("x"));
+
+            li.appendChild(x_btn)
+
+            tags_el.appendChild(li)
+            input.value = ""
+        }
+    }
+
+    if (input.value.length > 17) {
+        input.classList.toggle("is-invalid")
+        document.getElementById("tags-input-error").style.visibility = "visible";
+    } else {
+        input.classList.remove("is-invalid")
+        document.getElementById("tags-input-error").style.visibility = "visible";
+    }
+
+    clearTimeout(timer)
+    timer = setTimeout(function() {
+        console.log(input.value)
+
+    }, 500);
+}    
+
+function remove_tag(clicked_button) {   
+    btn_value = clicked_button.value
+    clicked_button.parentElement.remove();
+}
+</script>
+
+{% endblock content %}

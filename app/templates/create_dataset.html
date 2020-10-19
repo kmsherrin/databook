@@ -1,0 +1,257 @@
+{% extends "base.html" %} {% block content %}
+<div class="content-section row d-flex justify-content-center">
+  <form action="" method="POST" id="dataset-form">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4 mont">{{ legend }}</legend>
+
+      <div class="form-group mb-3">
+        {{ form.title.label(class="form-control-label") }} {% if
+        form.title.errors %} {{ form.title(class="form-control is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.title.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+
+        {% else %} {{ form.title(class="form-control") }} {% endif %}
+      </div>
+
+      <div class="form-group mb-3">
+        {{ form.abstract.label(class="form-control-label") }} {% if
+        form.abstract.errors %} {{ form.abstract(class="form-control
+        is-invalid", rows=5) }}
+        <div class="invalid-feedback">
+          {% for error in form.abstract.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+
+        {% else %} {{ form.abstract(class="form-control", rows=7) }} {% endif %}
+      </div>
+      <div class="form-group mb-3">
+        {{ form.category.label(class="form-control-label") }} {% if
+        form.category.errors %} {{ form.category(class="form-control
+        is-invalid", rows=5) }}
+        <div class="invalid-feedback">
+          {% for error in form.category.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+
+        {% else %} {{ form.category(class="form-control", rows=7) }} {% endif %}
+      </div>
+      <div id="drop-area">
+        Drag and drop files 🤏
+        <div>
+          {{ form.datasets(class="form-control-file", id="file-upload",
+          multiple="multiple")}}
+          <progress id="file-upload-progress" max="100" value="0"></progress>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  <div class="form-group mt-1 mb-3 float-right">
+    {{ form.submit(class="btn btn-primary") }}
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div
+  class="modal fade"
+  id="upload-modal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="DeleteModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delete-modal-label">Delete Post?</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //document.getElementById('file-upload').setAttribute("multiple", "multiple")
+
+  const file_input = document.getElementById("file-upload");
+  const drop_area = document.getElementById("drop-area");
+  const progress_bar = document.getElementById("file-upload-progress");
+
+  let files_completed = 0;
+  let files_in_progress = 0;
+  let upload_progress = [];
+  let files_uploaded = false;
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+    drop_area.addEventListener(eventName, preventDefaults, false);
+  });
+
+  function update_progress(file_number, percent) {
+    upload_progress[file_number] = percent  
+    let total = upload_progress.reduce((tot, curr) => tot + curr, 0) / upload_progress.length
+    progress_bar.value = total
+  }
+
+  function init_progress(number_files) {
+      progress_bar.value = 0
+      upload_progress = []
+      for (let i = number_files; i > 0; i--) {
+          upload_progress.push(0)
+      }
+  }
+
+
+  drop_area.addEventListener("drop", handle_drop, false);
+
+  function handle_drop(e) {
+    let dt = e.dataTransfer;
+    let files = dt.files;
+    file_input.files = dt.files;
+    handle_files(files);
+  }
+
+  function handle_files(files) {
+    [...files].forEach(send_file);
+  }
+
+  let files = [];
+  file_input.addEventListener("change", function (event) {
+    files = [];
+    for (let index = 0; index < file_input.files.length; index++) {
+      const element = file_input.files[index];
+      files.push(element);
+    }
+
+    files.forEach(send_file);
+
+  });
+  
+  const submit_button = document.getElementById("submit");
+  console.log(submit_button);
+
+  submit_button.addEventListener("click", function (event) {
+    preventDefaults(event);
+    //document.getElementById('upload-modal').modal()
+
+    let file_names = [];
+    //files.forEach(send_file);
+
+    if (files_uploaded) {
+        document.getElementById("dataset-form").submit();
+    }
+  });
+
+  function send_file(file, i) {
+    let form_data = new FormData();
+    let req = new XMLHttpRequest();
+    req.open("POST", "/data/upload");
+
+    req.upload.addEventListener('progress', function(e) {
+        update_progress(i, (e.loaded * 100 / e.total) || 100)
+    })
+
+    req.addEventListener('readystatechange', function(e) {
+        if (req.readyState == 4 && req.status == 200) {
+            files_uploaded = true;
+        } else if (req.readyState == 4 & req.readyState != 200) {
+            // Error
+        }
+    })
+
+    form_data.set("file", file);
+    req.send(form_data);
+  }
+
+  ["dragenter", "dragover"].forEach((eventName) => {
+    drop_area.addEventListener(eventName, highlight, false);
+  });
+  ["dragleave", "drop"].forEach((eventName) => {
+    drop_area.addEventListener(eventName, unhighlight, false);
+  });
+
+  function highlight(e) {
+    drop_area.classList.add("highlight");
+  }
+
+  function unhighlight(e) {
+    drop_area.classList.remove("highlight");
+  }
+
+  var timer;
+  function search_tags(input) {
+    if (input.value[input.value.length - 1] === ",") {
+      if (input.value.length > 3) {
+        const tag_input = input.value.substring(0, input.value.length - 1);
+        const tags_el = document.getElementById("tags");
+
+        var li = document.createElement("li");
+
+        li.setAttribute("class", "badge rounded-pill bg-primary");
+        var input_tag = document.createElement("input");
+        input_tag.setAttribute("id", "tags-" + tags_el.children.length);
+        input_tag.setAttribute("type", "text");
+        input_tag.setAttribute("readonly", "readonly");
+        input_tag.setAttribute("value", tag_input);
+        input_tag.setAttribute("name", "tags-" + tags_el.children.length);
+        //input_tag.setAttribute('class', 'badge rounded-pill bg-primary')
+        input_tag.appendChild(document.createTextNode(tag_input));
+        li.appendChild(input_tag);
+
+        var x_btn = document.createElement("button");
+        x_btn.setAttribute("class", "btn btn-sm");
+        x_btn.setAttribute("onClick", "remove_tag(this)");
+        x_btn.setAttribute("value", tag_input);
+        x_btn.setAttribute("type", "button");
+        //x_btn.appendChild(document.createElement("x"));
+
+        li.appendChild(x_btn);
+
+        tags_el.appendChild(li);
+        input.value = "";
+      }
+    }
+
+    if (input.value.length > 17) {
+      input.classList.toggle("is-invalid");
+      document.getElementById("tags-input-error").style.visibility = "visible";
+    } else {
+      input.classList.remove("is-invalid");
+      document.getElementById("tags-input-error").style.visibility = "visible";
+    }
+
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      console.log(input.value);
+    }, 500);
+  }
+
+  function remove_tag(clicked_button) {
+    btn_value = clicked_button.value;
+    clicked_button.parentElement.remove();
+  }
+</script>
+
+{% endblock content %}
