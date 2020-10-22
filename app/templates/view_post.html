@@ -242,3 +242,20 @@
   </div>
 </div>
 {% endblock content %}
+
+<script>
+const time_stamps = document.getElementsByClassName("time-stamp")
+const time_now = new Date();
+
+for (let index = 0; index < time_stamps.length; index++) {
+  const element = time_stamps[index];
+  const time_value = element.getAttribute('value');
+  const local_date = new Date(time_value + 'Z');
+  let time_text = posted_time_text(local_date)
+
+  element.textContent = time_text;
+  element.title = `Posted at: ${local_date.toLocaleString()}`;
+}
+
+</script>
+
