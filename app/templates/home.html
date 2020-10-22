@@ -54,80 +54,8 @@
     </div>
     {% else %}
       {% for post in posts.items %}
-
-          <article class="content-section mt-2">
-            <div class="row">
-              <div class="col-md-1 col-sm-12">
-                <div class="row">
-                  <div class="col-6 col-md-12">
-                    <div class="row">
-                      <img style="max-width: 100px;" class="rounded-circle" src="{{ url_for('static', filename='images/profile_pictures/' + post.user.image_file) }}" alt="{{ post.user.username }} profile picture">
-    
-                    </div>
-                  </div>
-    
-                  <div class="col-6 col-md-12 mt-1 justify-content-center align-items-center text-center">
-                    <div id="likes_div_{{post.id}}" class="row d-flex justify-content-center align-items-center">
-                      {% if post.likes.count() == 1 %}
-                        <h6>{{post.likes.count()}} like</h6>
-                      {% else %}
-                        <h6>{{post.likes.count()}} likes</h6>
-                      {% endif%}
-                    </div>                
-                    <div class="row justify-content-center align-items-center">
-                      <div class="col-6 col-md-10">
-                        {% if current_user.is_authenticated %}
-                        {% if current_user.has_liked_post(post) %}
-                          <button class="btn btn-sm btn-outline-danger" onclick="send_like_action(this)" value="{{post.id}}">Unlike</button>
-                        {% else %}
-                          <button class="btn btn-sm btn-outline-success" onclick="send_like_action(this)" value="{{post.id}}">Like</button>
-                        {% endif %}
-                      {% endif %}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
-
-              <div class="col-md-11 col-sm-6">
-                <div class="row border-bottom pb-2">
-                  <div class="col-6">
-                      <a class="mr-2" href="{{ url_for('users.user_posts', username=post.user.username) }}">{{ post.user.username }}</a>
-                  </div>
-                  <div class="col-6 d-flex">
-                    <small title="Time: {{post.date_posted.strftime('%H:%M')}}" class="text-muted ml-auto time-stamp" value="{{ post.date_posted }}">Date Posted: {{ post.date_posted.strftime('%d/%m/%Y') }}</small>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="d-flex align-items-center">
-                    <h2 class="mt-4"><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
-                    <div class="ml-auto">
-                      <span class="badge rounded-pill bg-primary">{{ post.category }}</span>
-                    </div>
-                  </div>
-                  <p class="article-content">{{ post.content|markdown }}</p>
-                </div>
-
-                <div class="row">
-                  {% for tag in post.tags|sort(attribute="tag") %}
-                  <div class="d-inline-flex" style="width: fit-content; padding: 0.2rem;">
-                    <a href="{{ url_for('posts.tagged_post', tag=tag.tag) }}" class="text-decoration-none badge rounded-pill bg-secondary">{{ tag.tag }}</a>
-                  </div>
-                  {% endfor %}
-                </div>
-
-                <div class="row border-top mt-1 pt-3">
-                  {% if post.comments.count() == 1 %}
-                    <h5><a href="{{ url_for('posts.post', post_id=post.id) }}">{{post.comments.count()}} Comment</a></h5>
-                  {% else %}
-                    <h5><a href="{{ url_for('posts.post', post_id=post.id) }}">{{post.comments.count()}} Comments</a></h5>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-          </article>
+          {% include 'post.html' %}
+          
 
       {% endfor %}
     {% endif %}

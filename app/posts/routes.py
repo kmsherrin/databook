@@ -69,7 +69,7 @@ def post(post_id):
 
         print(comment_replies)
         
-    return render_template('view_post.html', title=post.title, post=post, comment_form=comment_form, 
+    return render_template('view_post.html', title=post.title, post=post, comment_form=comment_form, post_editable=True, show_comments=True,
                             comments=comments, comment_reply_form=comment_reply_form, comment_replies=comment_replies)
 
 @posts.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
