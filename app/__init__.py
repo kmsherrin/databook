@@ -6,6 +6,7 @@ from flask_bcrypt import Bcrypt
 from flask_mail import Mail
 from flaskext.markdown import Markdown
 from flask_migrate import Migrate
+import threading
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -42,8 +43,9 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
 
     Markdown(app, output_format='html5')
-
+    lock = threading.Lock()
     with app.app_context():
-        db.create_all()
+        with lock:
+            db.create_all()
 
     return app
