@@ -45,7 +45,7 @@
               <div class="navbar-nav"> 
                 {% if current_user.is_authenticated %} 
                   <div style="display:flex; align-items: center;"> 
-                    <img class="rounded-circle" src="{{ url_for('static', filename='images/profile_pictures/' + current_user.image_file) }}" alt="" width=25 height=25>
+                    <img class="rounded-circle" src="https://databook-profilepicture.s3-ap-southeast-2.amazonaws.com/static/images/profile_pictures/{{current_user.image_file}}" alt="" width=25 height=25>
                     <a class="nav-item nav-link p-1" href="{{ url_for('users.account') }}" style="font-weight: bold;">{{ current_user.username }}</a>  
                   </div>
                   <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>

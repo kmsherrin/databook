@@ -4,7 +4,8 @@ from PIL import Image
 from flask_mail import Message
 from flask import current_app
 from app import mail
-
+import boto3
+BUCKET = "databook-profilepicture"
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -17,7 +18,11 @@ def save_picture(form_picture):
     img = Image.open(form_picture)
     img.thumbnail(output_size)
     img.save(picture_path)
+
+    resp = upload_file(picture_path, BUCKET, f'static/images/profile_pictures/{picture_fn}')
     
+    os.remove(picture_path)
+
     return picture_fn
 
 
@@ -30,3 +35,13 @@ def send_reset_email(user):
     msg.body = f"To reset your password, visit the following link: {url_for('reset_password', token=token, _external=True)} If you did not make this request simply ignore this email."
     
     mail.send(msg)
+
+
+def upload_file(file_name, bucket, object_name):
+    """
+    Function to upload a file to an S3 bucket
+    """
+    s3_client = boto3.client('s3')
+    response = s3_client.upload_file(file_name, bucket, object_name, ExtraArgs={'ACL': 'public-read'})
+
+    return response
