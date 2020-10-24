@@ -83,12 +83,13 @@ class Dataset(db.Model):
 
     category = db.Column(db.String, nullable=False, default="General")
 
-    dataset_files = db.relationship('DatasetLocation', backref='dataset', lazy='dynamic')
+    #dataset_files = db.relationship('DatasetLocation', backref='dataset', lazy='dynamic')
 
 class DatasetLocation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
     href = db.Column(db.String, nullable=False)
-    dataset_id = db.Column(db.Integer, db.ForeignKey('dataset.id'), nullable=False)
+    dataset_id = db.Column(db.Integer, nullable=False)
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)

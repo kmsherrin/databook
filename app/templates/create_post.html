@@ -87,8 +87,12 @@ function search_tags(input) {
 
             li.setAttribute('class', 'badge rounded-pill bg-primary')
             var input_tag = document.createElement("input");
+
+            //[size]="myInput.value.length"
+
             input_tag.setAttribute('id', "tags-" + tags_el.children.length)
             input_tag.setAttribute('type', "text")
+            input_tag.setAttribute('size', tag_input.length)
             input_tag.setAttribute('readonly', 'readonly')
             input_tag.setAttribute('value', tag_input);
             input_tag.setAttribute('name', "tags-" + tags_el.children.length)

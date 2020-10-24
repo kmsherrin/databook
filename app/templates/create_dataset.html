@@ -42,17 +42,19 @@
         {% else %} {{ form.category(class="form-control", rows=7) }} {% endif %}
       </div>
       <div id="drop-area">
-        Drag and drop files 🤏
-        <div>
+        <p class="text-center">Drag and drop files 🤏</p>
+        <div class="d-flex justify-content-center">
           {{ form.datasets(class="form-control-file", id="file-upload",
-          multiple="multiple")}}
+          multiple="multiple", accept=".csv")}}
         </div>
-        <progress id="file-upload-progress" max="100" value="0"></progress>
+        <div class="d-flex justify-content-center">
+          <progress class="" id="file-upload-progress" max="100" value="0"></progress>
+        </div>
       </div>
     </fieldset>
   </form>
-  <div class="form-group mt-1 mb-3 float-right">
-    {{ form.submit(class="btn btn-primary") }}
+  <div class="form-group mt-3 mb-3">
+    {{ form.submit(class="btn btn-primary float-right") }}
   </div>
 </div>
 
@@ -110,19 +112,20 @@
   });
 
   function update_progress(file_number, percent) {
-    upload_progress[file_number] = percent  
-    let total = upload_progress.reduce((tot, curr) => tot + curr, 0) / upload_progress.length
-    progress_bar.value = total
+    upload_progress[file_number] = percent;
+    let total =
+      upload_progress.reduce((tot, curr) => tot + curr, 0) /
+      upload_progress.length;
+    progress_bar.value = total;
   }
 
   function init_progress(number_files) {
-      progress_bar.value = 0
-      upload_progress = []
-      for (let i = number_files; i > 0; i--) {
-          upload_progress.push(0)
-      }
+    progress_bar.value = 0;
+    upload_progress = [];
+    for (let i = number_files; i > 0; i--) {
+      upload_progress.push(0);
+    }
   }
-
 
   drop_area.addEventListener("drop", handle_drop, false);
 
@@ -130,7 +133,8 @@
     let dt = e.dataTransfer;
     let files = dt.files;
     file_input.files = dt.files;
-    handle_files(files);
+
+    //handle_files(files);
   }
 
   function handle_files(files) {
@@ -144,44 +148,67 @@
       const element = file_input.files[index];
       files.push(element);
     }
-
-    files.forEach(send_file);
-
+    //files.forEach(send_file);
   });
-  
+
   const submit_button = document.getElementById("submit");
   console.log(submit_button);
 
   submit_button.addEventListener("click", function (event) {
     preventDefaults(event);
-    //document.getElementById('upload-modal').modal()
 
-    let file_names = [];
-    //files.forEach(send_file);
+    var form_data = new FormData(document.getElementById("dataset-form"));
+    let req = new XMLHttpRequest();
 
-    if (files_uploaded) {
-        document.getElementById("dataset-form").submit();
+    req.open("POST", "/data/new");
+
+    let dataset_id = "";
+
+    fetch("/data/new", {
+      method: "POST",
+      body: form_data,
+    })
+      .then((response) => response.json())
+      .then(data => {
+        dataset_id = data["dataset_id"];
+        files = document.getElementById("file-upload").files;
+        [...files].forEach((file, i) => send_file(file, i, dataset_id));
+      });
+  });
+
+  progress_bar.addEventListener("progress", function (event) {
+    console.log('progress bar update')
+    if (progress_bar.value == 100) {
+      let f_d = new FormData();
+      f_d.set("dataset_uploaded", true);
+      fetch("/data/new", {
+        method: "POST",
+        body: f_d,
+      });
     }
   });
 
-  function send_file(file, i) {
+  function send_file(file, i, dataset_id) {
     let form_data = new FormData();
+
+    form_data.set("file", file);
+    form_data.set("dataset_id", dataset_id);
+    console.log("Sending file?");
     let req = new XMLHttpRequest();
     req.open("POST", "/data/upload");
 
-    req.upload.addEventListener('progress', function(e) {
-        update_progress(i, (e.loaded * 100 / e.total) || 100)
-    })
+    req.upload.addEventListener("progress", function (e) {
+      update_progress(i, (e.loaded * 100) / e.total || 100);
+    });
 
-    req.addEventListener('readystatechange', function(e) {
-        if (req.readyState == 4 && req.status == 200) {
-            files_uploaded = true;
-        } else if (req.readyState == 4 & req.readyState != 200) {
-            // Error
-        }
-    })
-
-    form_data.set("file", file);
+    req.addEventListener("readystatechange", function (e) {
+      if (req.readyState == 4 && req.status == 200) {
+        files_uploaded = true;
+        //console.log(req.response);
+      } else if ((req.readyState == 4) & (req.readyState != 200)) {
+        // Error
+      }
+    });
     req.send(form_data);
   }
 
