@@ -13,6 +13,8 @@ def save_picture(form_picture):
     picture_fn = random_hex + file_ext
     picture_path = os.path.join(current_app.root_path, 'static/images/profile_pictures', picture_fn)
 
+    os.mkdir(os.path.join(current_app.root_path, 'static/images/profile_pictures'))
+
     # Resize the profile picture to a more usable size
     output_size = (130, 130)
     img = Image.open(form_picture)
