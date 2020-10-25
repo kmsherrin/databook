@@ -86,7 +86,11 @@
 
 .article-content {
   white-space: pre-line;
-  font-family: 'Segoe UI', sans-serif !important;
+  /*font-family: 'Segoe UI', sans-serif !important;*/
+}
+
+.image-fit img {
+  width: inherit;
 }
 
 .article-metadata {
