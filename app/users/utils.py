@@ -12,9 +12,10 @@ def save_picture(form_picture):
     _, file_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + file_ext
     picture_path = os.path.join(current_app.root_path, 'static/images/profile_pictures', picture_fn)
-
-    os.mkdirs(os.path.join(current_app.root_path, 'static/images/profile_pictures'))
-
+    
+    if not os.path.exists(os.path.join(current_app.root_path, 'static/images/profile_pictures')):
+        os.makedirs(os.path.join(current_app.root_path, 'static/images/profile_pictures'))
+    
     # Resize the profile picture to a more usable size
     output_size = (130, 130)
     img = Image.open(form_picture)
