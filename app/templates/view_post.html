@@ -36,7 +36,7 @@
             <div class="col-md-2 text-center">
               <img
                 class="rounded-circle"
-                src="{{ url_for('static', filename='images/profile_pictures/' + comment.user.image_file) }}"
+                src="https://databook-profilepicture.s3-ap-southeast-2.amazonaws.com/static/images/profile_pictures/{{comment.user.image_file}}"
                 alt=""
                 width="50"
                 height="50"
@@ -109,7 +109,7 @@
               <div class="col-md-2 text-center">
                 <img
                   class="rounded-circle"
-                  src="https://databook-profilepicture.s3-ap-southeast-2.amazonaws.com{{reply.user.image_file}}"
+                  src="https://databook-profilepicture.s3-ap-southeast-2.amazonaws.com/static/images/profile_pictures/{{reply.user.image_file}}"
                   alt=""
                   width="30"
                   height="30"
