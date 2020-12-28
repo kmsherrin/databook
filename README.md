@@ -11,3 +11,4 @@ This was a intermediate project for testing and learning some things that I hadn
 TODO's:
 - Clean up mobile UI
 - Implement an elasticsearch for the Tags and Search
+- Add tests for database entries
