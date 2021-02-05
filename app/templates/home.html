@@ -66,7 +66,7 @@
             {% if posts.page == page_num %}
             <a class="btn btn-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num, type=type, time=time) }}"> {{ page_num }} </a>
             {% else %}
-            <a class="btn btn-outline-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num) }}"> {{ page_num }} </a>
+            <a class="btn btn-outline-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num, type=type, time=time.lower()) }}"> {{ page_num }} </a>
             {% endif %}
         {% else %}
             ...
