@@ -1,3 +1,9 @@
+"""
+
+Set up the configuration settings for the flask app, this class is passed into the Flask app constructor as the config_class
+
+"""
+
 import os
 
 class Config:
