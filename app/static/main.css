@@ -202,13 +202,13 @@ p {
 .search-cog { 
   padding: 0 0.6rem 0 0.3rem;
   text-decoration: none;
-
+  cursor: pointer;
 }
 
 /* Container for the text input and the advanced search cog */
 .search-container {
   margin: 0 0.5rem 0 0.5rem;
-  padding: 0 0.2rem 0 0;
+  padding: 0.2rem 0.2rem 0.2rem 0.2rem;
   display: flex;
   width: 100%;
   align-items: center;
@@ -224,6 +224,7 @@ p {
 .search-bar {
   border: 0px;
   width: 100%;
+  padding: 0.3rem 0.3rem 0.3rem 0.6rem;
   transition-property: all;
   transition-duration: 0.5s;
   margin-right: 0.3rem;

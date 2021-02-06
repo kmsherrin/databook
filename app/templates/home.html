@@ -2,16 +2,15 @@
 
 {% block content %}
 
-<div class="row d-flex align-items-center justify-content-center mt-3 mb-2">
-  <div class="col-lg-6 d-flex align-items-center justify-content-center">
+<div class="row d-flex align-items-center justify-content-center mt-3 mb-3">
+  <div class="col-lg-7 d-flex align-items-center justify-content-center">
       <div class="search-container">
-        <input placeholder="Search" class="form-control search-bar" type="text"> 
-        
-        <a class="search-cog" title="Advanced Search" href="{{ url_for('main.search') }}">
+        <input id="search-input" class="search-bar" type="text" placeholder="Search">
+        <a href="" class="search-cog" title="Advanced Search" >
           ⚙ 
         </a>
       </div>
-      <button class="btn btn-outline-primary" title="Search" style="display: block;padding: 0.35rem 1.2rem 0.35rem 1.2rem;"><span>🔍</span></button></input> 
+      <button onclick=submit_search() class="btn btn-outline-primary" title="Search" style="display: block; padding: 0.4rem 1.2rem 0.4rem 1.2rem;"><span>🔍</span></button></input> 
   </div>
 </div>
 
@@ -96,8 +95,6 @@
 
 </div>
 
-
-
 <script src="{{ url_for('static', filename='utility.js') }}"></script>
 
 <script>
@@ -112,6 +109,11 @@
 
     element.textContent = time_text;
     element.title = `Posted at: ${local_date.toLocaleString()}`;
+  }
+
+  function submit_search() {
+    let search_input = document.getElementById("search-input").value;
+    window.location.href = `/search?searchq=${search_input}`;
   }
 
 </script>

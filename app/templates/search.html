@@ -1,12 +1,70 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <section id="search_section">
-    
-        <h1>Search </h1>
 
+
+
+  <h1>Search</h1>
+
+  <div class="row d-flex align-items-center justify-content-center mt-3 mb-3">
+    <div class="col-lg-7 d-flex align-items-center justify-content-center">
+        <div class="search-container">
+          <input id="search-input" class="search-bar" type="text" placeholder="Search">
+          <a href="" class="search-cog" title="Advanced Search" >
+            ⚙ 
+          </a>
+        </div>
+        <button onclick=submit_search() class="btn btn-outline-primary" title="Search" style="display: block; padding: 0.4rem 1.2rem 0.4rem 1.2rem;"><span>🔍</span></button></input> 
+    </div>
+  </div>
+
+  <div id="advanced_search">
+
+  </div>
+
+
+  <h6>
+      {{ post_count }} results <span style="font-size: small;">found in {{ "%.2fs"|format(query_time) }}</span> 
+  </h6>
+  {% if posts.items|length < 1 %}
+  <div class="col-12 d-flex justify-content-center align-items-center mt-5">
+    <span> There doesn't seem to be any posts here 🙇‍♂️ </span>
+  </div>
+  {% else %} 
+    {% for post in posts.items %} 
+        {% include 'post.html' %} 
+    {% endfor %} 
+  {% endif %}
+
+  <div class="float-right">
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+          {% if posts.page == page_num %}
+          <a class="btn btn-secondary btn-sm mb-4" href="{{ url_for('main.search', searchq=clean_search_term, page=page_num ) }}"> {{ page_num }} </a>
+          {% else %}
+          <a class="btn btn-outline-secondary btn-sm mb-4" href="{{ url_for('main.search', searchq=clean_search_term, page=page_num) }}"> {{ page_num }} </a>
+          {% endif %}
+      {% else %}
+          ...
+      {% endif %}
+  {% endfor%}
+  </div>
+  
 
 </section>
+
+<script>
+
+    window.onload = (event) => {
+        document.getElementById("search-input").value = "{{ clean_search_term }}";
+        console.log('page is fully loaded');
+    };
+
+    function submit_search() {
+        let search_input = document.getElementById("search-input").value;
+        window.location.href = `/search?searchq=${search_input}`;
+    }
+
+</script>
 
 {% endblock content %}
