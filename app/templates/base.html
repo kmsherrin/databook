@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 
+    
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
@@ -36,8 +37,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarToggle">
               <div class="navbar-nav mr-auto">
+
                 <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
-                <a class="nav-item nav-link" href="/about">About</a>
+                <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About</a>
                 {% if current_user.is_authenticated %}
                   <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">New Post</a>
                   <a class="nav-item nav-link" href="{{ url_for('datasets.new_dataset') }}">New Dataset</a>
@@ -62,6 +64,8 @@
         </nav>
     </header>
 
+    <!-- This piece below is used for alerts to the user on page updates i.e. displaying a confirmation or error -->
+
     <main role="main" class="container">
         <div class="row">
             {% with messages = get_flashed_messages(with_categories=True) %}
@@ -73,9 +77,14 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-
-            {% block content %}{% endblock %}
+            
+            <section class="ml-auto mr-auto">
+              {% block content %}{% endblock %}
+            </section>
         </div>
     </main>
+
+    {% include 'footer.html' %}
+
 </body>
 </html>

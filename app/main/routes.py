@@ -6,11 +6,12 @@ pulled from the db
 
 from flask import Blueprint
 from flask import render_template, request, Response
-from app.models import Post, Like
-from sqlalchemy import func, cast, Date
+from app.models import Post, Like, Tag, User
+from sqlalchemy import func, cast, Date, desc, text
 import datetime
 
 main = Blueprint('main', __name__)
+
 
 @main.route("/")
 @main.route("/home")
@@ -49,8 +50,17 @@ def home():
         posts = Post.query.filter(func.date(Post.date_posted) >= td).join(Like).order_by(func.count(Like.post_id).desc(), Post.date_posted.desc()).group_by(Post.id).paginate(per_page=per_page, page=page)
         page_header = "Top Posts"   
 
+    # Get the top tags
+    top_tags = Tag.query.with_entities(Tag.tag, func.count(Tag.id).label('freq')).group_by(Tag.tag).order_by(desc(text('freq'))).limit(10)
+
+    #top_users = User.query.with_entities(User.username, func.count(User.posts.likes).label('total_likes')).group_by(User.username).order_by(desc(text('total_likes'))).limit(10)
+    #top_users = User.query.filter(User.username, func.count(Like.id).label('total_likes')).select_from(Post).join(Post.user_id).select_from(Like).join(Like.post_id).group_by(User.id).order_by(desc(text('total_likes')))
+    #posts = Post.query.filter(func.date(Post.date_posted) >= td).join(Like).order_by(func.count(Like.post_id).desc(), Post.date_posted.desc()).group_by(Post.id).paginate(per_page=per_page, page=page) 
+    #top_users = User.query.filter().join(Like, Like.author_id == User.id).group_by(Like.author_id).order_by(func.count(Like.post_id).desc())
+    top_users = User.query.with_entities(User, func.count(Like.post_id).label('total_likes')).join(Like, Like.author_id == User.id).group_by(User.id).order_by(desc(text('total_likes'))).limit(5)
+
     # Send response
-    resp = Response(render_template('home.html', title='Home', posts=posts, page_header=page_header, time=time.capitalize(), type=post_type))
+    resp = Response(render_template('home.html', title='Home', posts=posts, top_tags=top_tags, top_users=top_users, page_header=page_header, time=time.capitalize(), type=post_type))
     resp.cache_control.public = True 
     resp.cache_control.max_age = 10 
     resp.cache_control.immutable = True
@@ -59,4 +69,11 @@ def home():
     return resp
 
 
+@main.route("/about")
+def about():
+    return Response(render_template('about.html'))
 
+@main.route("/search")
+def search():
+
+    return Response(render_template('search.html'))

@@ -6,6 +6,24 @@
   height: 0;
 }
 
+.top-tags {
+  display: none;
+}
+
+.home-layout {
+  grid-template-columns: auto;
+}
+
+@media (min-width: 1200px) { 
+  .top-tags {
+    display: block;
+  }
+  .home-layout {
+    grid-template-columns: 0.2fr 1fr;
+  }
+ }
+
+
 .tags-list {
   list-style: none;
   margin: 0.2rem;
@@ -39,7 +57,6 @@
   background-color: #dc3545;
 
 }
-
 
 .tags-list input {
   border: 0px;
@@ -85,7 +102,12 @@
 
 .article-content {
   white-space: pre-line;
+  font-size: small;
   /*font-family: 'Segoe UI', sans-serif !important;*/
+}
+
+.article-content h1 {
+  font-size: medium;
 }
 
 .image-fit img {
@@ -112,19 +134,11 @@
   margin-right: 20px;
   margin-bottom: 16px;
 }
-
-.search-bar {
-  width: 100%;
-  transition-property: all;
-  transition-duration: 0.5s;
-  margin-right: 0.3rem;
-}
-
-
   
 
 h1, h2, h3, h4, h5 {
   font-family: 'Montserrat', sans-serif;
+  padding: 0.2rem;
 }
 
 p {
@@ -170,4 +184,53 @@ p {
     background-color: teal;
 
   }
+}
+
+/* Fancy little text highlight for a bit of colour */
+.text-highlight {
+  font-style: normal;
+  border-radius: 1em 0 1em 0;
+  background-image: 
+    linear-gradient(-100deg, 
+      rgba(150, 183, 255, 0.055),
+      rgba(150, 174, 255, 0.226) 100%, 
+      rgba(150, 178, 255, 0.089)
+    );
+}
+
+/* Cog for advanced search in the search text input */
+.search-cog { 
+  padding: 0 0.6rem 0 0.3rem;
+  text-decoration: none;
+
+}
+
+/* Container for the text input and the advanced search cog */
+.search-container {
+  margin: 0 0.5rem 0 0.5rem;
+  padding: 0 0.2rem 0 0;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  border: 1px solid #CED4DA;
+  border-radius: 0.35rem;
+  background-color: white;
+  transition: all 0.1s;
+}
+.search-container:focus-within {
+  border: 1px solid rgba(150, 166, 255, 0.794) ;
+}
+
+.search-bar {
+  border: 0px;
+  width: 100%;
+  transition-property: all;
+  transition-duration: 0.5s;
+  margin-right: 0.3rem;
+}
+
+.search-bar:focus{
+  outline: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }

@@ -31,7 +31,7 @@ class User(db.Model, UserMixin):
     
     def like_post(self, post):
         if not self.has_liked_post(post):
-            like = Like(user_id=self.id, post_id=post.id)
+            like = Like(user_id=self.id, author_id=post.user_id, post_id=post.id)
             db.session.add(like)
 
     def unlike_post(self, post):
@@ -98,9 +98,12 @@ class Tag(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+    def get_popular_tags(self):
+        return Tag.query(func.count(self.id).label('freq')).group_by(self.tag).order_by(desc('freq')).limit(5)
 
 class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, default=0)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

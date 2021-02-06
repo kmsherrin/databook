@@ -1,0 +1,13 @@
+<section class="content-section">
+    <h4>Top Tags</h4>
+    <hr>
+    <div id="tags">
+        {% for tag in top_tags %}
+        <a href="{{ url_for('posts.tagged_post', tag=tag.tag) }}" class="pt-4">
+            <h6 style="padding-top: 0.1rem;">
+                {{ tag.tag }} <small style="text-decoration: none !important;" >({{ tag.freq }} posts)</small>
+            </h6>  
+        </a>
+        {% endfor %}
+    </div>
+</section>

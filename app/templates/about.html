@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<section>
+
+    <h2>
+        About
+    </h2>
+    <p>
+        This small project was used as basis for gaining a more complex understanding of Flask and the modular feature set built upon it. 
+
+        The key features built out into this web app include: 
+        <ol>
+            <li>
+                In built user account registration, login, authentication and password resetting
+            </li>
+            <li>
+                User profile customisation, including profile picture
+            </li>
+            <li>
+                Users can create, edit, delete posts which include support for Markdown formatting
+            </li>
+            <li>
+                Users can like and comment on other posts, comments can also be replied to
+            </li>
+            <li>
+                Datasets can be uploaded to the service, with the eventual idea of providing a visualisation dashboard
+            </li>
+        </ol>
+        <br>
+
+        All of these features are built upon a fairly simple backend infrastructure, composing entirely of a Monolithic flask architecture. 
+        Some of the key backend solutions are:
+        <ol>
+            <li>
+                Making use of Postgres database hosted serverless-ly on AWS 
+            </li>
+            <li>
+                All blob data is uploaded and stored on AWS S3 buckets
+            </li>
+            <li>
+                Flask handles the majority of the workload including handling forms and database operations with ORM SQLAlchemy
+            </li>
+            <li>
+                The Flask application is hosted on Heroku with Github intergration allowing for one-click deployments (or even automatic if necessary)
+            </li>
+        </ol>
+    </p>
+
+    <p>
+        One of the most difficult things that I have encounter in software development was from this project, mainly with my inexperience in 
+        designing robust SQL relational tables. I suppose I underestimated the planning work that is required, which would have made many 
+        development issues non-existant. Realising that an obscure relation is actually necessary halfway into developing is quite annoying. 
+        It also becomes a bigger problem when you are also trying to keep queries performant and able to scale reasonably. 
+    </p>
+    <p>
+        In this case one thing that cropped up was the realisation I would want to keep track of which users had the most likes on their posts.
+        I had not implemented this as a relation early on and it would prove a little tricky to do so with performance in mind (i.e. 
+        exponential scaling of active users accessing + amount of users in db + amount of likes). My current implementation is not entirely perfect, and 
+        I would expect it will have issues when many users are online, however for now it does work..
+    </p>
+</section>
+
+{% endblock content %}

@@ -3,7 +3,7 @@
 {% block content %}
 <section id="top-posts">
 
-    <h1 class="p-2">{{ tag }} posts</h1>
+    <h1 class="pt-3 pb-3"><span class="text-highlight">{{ tag }}</span> posts</h1>
     {% for post in posts.items %}
           
       {% include 'post.html' %}

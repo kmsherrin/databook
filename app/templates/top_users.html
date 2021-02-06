@@ -1,0 +1,13 @@
+<section class="content-section">
+    <h4>Top Users</h4>
+    <hr>
+    <div id="tags">
+        {% for user in top_users %}
+        <a href="{{ url_for('users.user_posts', username=user.User.username) }}" class="pt-3">
+            <h6 style="padding-top: 0.1rem;">
+                {{ user.User.username }} <small style="text-decoration: none;">({{ user.total_likes }} likes)</small>
+            </h6>  
+        </a>
+        {% endfor %}
+    </div>
+</section>

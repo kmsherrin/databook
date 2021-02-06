@@ -1,80 +1,102 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row d-flex align-items-center justify-content-center mt-2 mb-2">
+
+<div class="row d-flex align-items-center justify-content-center mt-3 mb-2">
   <div class="col-lg-6 d-flex align-items-center justify-content-center">
-      <input placeholder="Search" class="form-control search-bar" type="text"> <button class="btn btn-outline-primary" style="display: block; padding: 0.3rem 1rem 0.3rem 1rem;"><span>🔍</span></button></input> 
+      <div class="search-container">
+        <input placeholder="Search" class="form-control search-bar" type="text"> 
+        
+        <a class="search-cog" title="Advanced Search" href="{{ url_for('main.search') }}">
+          ⚙ 
+        </a>
+      </div>
+      <button class="btn btn-outline-primary" title="Search" style="display: block;padding: 0.35rem 1.2rem 0.35rem 1.2rem;"><span>🔍</span></button></input> 
   </div>
 </div>
 
-<section id="top-posts">
-    <div class="row d-flex align-items-center mt-1 mb-2">
-      <div class="col-md-6 d-flex align-items-center mt-1">
-        <h1 class="p-2 m-0">{{ page_header }}: {{ time }}</h1>
-      </div>
-      <div class="col-md-6 d-flex align-items-center justify-content-end mt-1">
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <a class="btn btn-outline-primary btn-sm {% if 'Top' in page_header %} active {% endif %}" href="{{ url_for('main.home', type='top') }}" style="text-decoration: none;">⭐ Top</a>
-          {% if 'Top' in page_header %}
+<div id="home_layout" class="home-layout" style="display: grid; grid-gap: 1.5rem;">
+  <aside>
+    <section class="top-tags">
+      {% include 'top_tags.html' %}
+    </section>
+    <section class="top-tags">
+      {% include 'top_users.html' %}
+    </section>
+  </aside>
+  
+  <section id="top-posts" style="height: 100%;">
+      <div class="row d-flex align-items-center mt-1 mb-2">
+        <div class="col-md-6 d-flex align-items-center mt-1">
+          <h1 class="p-2 m-0">{{ page_header }} <small style="font-size: smaller;">- {{ time }}</small></h1>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-end mt-1">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <a class="btn btn-outline-primary btn-sm {% if 'Top' in page_header %} active {% endif %}" href="{{ url_for('main.home', type='top') }}" style="text-decoration: none;">⭐ Top</a>
+            {% if 'Top' in page_header %}
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{ time }}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                  <li><a class="dropdown-item {% if time == 'Now' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='now') }}">Now</a></li>
+                  <li><a class="dropdown-item {% if time == 'Today' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='today') }}">Today</a></li>
+                  <li><a class="dropdown-item {% if time == 'Week' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='week') }}">Week</a></li>
+                  <li><a class="dropdown-item {% if time == 'Month' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='month') }}">Month</a></li>
+                  <li><a class="dropdown-item {% if time == 'Alltime' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='all time') }}">All Time</a></li>
+                </ul>
+              </div> 
+            {% endif %}  
+                     
+            <a class="btn btn-outline-primary btn-sm {% if 'Newest' in page_header %} active {% endif %}" href="{{ url_for('main.home', type='newest') }}" style="text-decoration: none;">✨ Newest</a>
+            {% if 'Newest' in page_header %}
             <div class="btn-group" role="group" aria-label="Basic example">
               <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ time }}
               </button>
               <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                <li><a class="dropdown-item {% if time == 'Now' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='now') }}">Now</a></li>
-                <li><a class="dropdown-item {% if time == 'Today' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='today') }}">Today</a></li>
-                <li><a class="dropdown-item {% if time == 'Week' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='week') }}">Week</a></li>
-                <li><a class="dropdown-item {% if time == 'Month' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='month') }}">Month</a></li>
-                <li><a class="dropdown-item {% if time == 'Alltime' %} active {% endif %}" href="{{ url_for('main.home', type='top', time='all time') }}">All Time</a></li>
+                <li><a class="dropdown-item {% if time == 'Now' %} active {% endif %}" href="{{ url_for('main.home', type='newest', time='now') }}">Now</a></li>
+                <li><a class="dropdown-item {% if time == 'Today' %} active {% endif %}" href="{{ url_for('main.home', type='newest', time='today') }}">Today</a></li>
+                <li><a class="dropdown-item {% if time == 'Week' %} active {% endif %}" href="{{ url_for('main.home', type='newest', time='week') }}">Week</a></li>
+                <li><a class="dropdown-item {% if time == 'Month' %} active {% endif %}" href="{{ url_for('main.home', type='newest', time='month') }}">Month</a></li>
               </ul>
             </div> 
           {% endif %}  
-                   
-          <a class="btn btn-outline-primary btn-sm {% if 'Newest' in page_header %} active {% endif %}" href="{{ url_for('main.home', type='newest') }}" style="text-decoration: none;">✨ Newest</a>
-          {% if 'Newest' in page_header %}
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <button id="btnGroupDrop1" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{ time }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-              <li><a class="dropdown-item {% if time == 'Now' %} active {% endif %}" href="{{ url_for('main.home', type='newest', time='now') }}">Now</a></li>
-              <li><a class="dropdown-item {% if time == 'Today' %} active {% endif %}" href="{{ url_for('main.home', type='newest', time='today') }}">Today</a></li>
-              <li><a class="dropdown-item {% if time == 'Week' %} active {% endif %}" href="{{ url_for('main.home', type='newest', time='week') }}">Week</a></li>
-              <li><a class="dropdown-item {% if time == 'Month' %} active {% endif %}" href="{{ url_for('main.home', type='newest', time='month') }}">Month</a></li>
-            </ul>
-          </div> 
-        {% endif %}  
+          </div>
         </div>
       </div>
-    </div>
-    {% if posts.items|length < 1 %}
-    <div class="col-12 d-flex justify-content-center align-items-center mt-5">
-      <span>
-        There doesn't seem to be any posts here 🙇‍♂️
-      </span>
-    </div>
-    {% else %}
-      {% for post in posts.items %}
-          {% include 'post.html' %}
+      {% if posts.items|length < 1 %}
+      <div class="col-12 d-flex justify-content-center align-items-center mt-5">
+        <span>
+          There doesn't seem to be any posts here 🙇‍♂️
+        </span>
+      </div>
+      {% else %}
+        {% for post in posts.items %}
+            {% include 'post.html' %}
+  
+        {% endfor %}
+      {% endif %}
+  
+      <div class="float-right">
+        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+          {% if page_num %}
+              {% if posts.page == page_num %}
+              <a class="btn btn-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num, type=type, time=time) }}"> {{ page_num }} </a>
+              {% else %}
+              <a class="btn btn-outline-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num, type=type, time=time.lower()) }}"> {{ page_num }} </a>
+              {% endif %}
+          {% else %}
+              ...
+          {% endif %}
+      {% endfor%}
+      </div>
+      
+  </section>
 
-      {% endfor %}
-    {% endif %}
+</div>
 
-    <div class="float-right">
-      {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-        {% if page_num %}
-            {% if posts.page == page_num %}
-            <a class="btn btn-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num, type=type, time=time) }}"> {{ page_num }} </a>
-            {% else %}
-            <a class="btn btn-outline-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num, type=type, time=time.lower()) }}"> {{ page_num }} </a>
-            {% endif %}
-        {% else %}
-            ...
-        {% endif %}
-    {% endfor%}
-    </div>
-    
-</section>
+
 
 <script src="{{ url_for('static', filename='utility.js') }}"></script>
 
