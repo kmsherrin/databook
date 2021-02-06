@@ -28,5 +28,20 @@
 
 <script src="{{ url_for('static', filename='utility.js') }}"></script>
 
+<script>
+function format_time_stamps(time_stamps) {
+  for (let index = 0; index < time_stamps.length; index++) {
+    const element = time_stamps[index];
+    const time_value = element.getAttribute('value');
+    const local_date = new Date(time_value + 'Z');
+    let time_text = posted_time_text(local_date)
 
+    element.textContent = time_text;
+    element.title = `Posted at: ${local_date.toLocaleString()}`;
+  }
+}
+  
+const time_stamps = document.getElementsByClassName("time-stamp")
+format_time_stamps(time_stamps);
+</script>
 {% endblock content %}

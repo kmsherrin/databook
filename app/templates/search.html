@@ -21,7 +21,7 @@
   <div id="advanced_search" class="advanced">
         <h6>Search what?</h6>
         
-        <input type="checkbox" name="search-title" id="search-title">
+        <input type="checkbox" name="search-title" id="search-title" checked="True">
         <label for="search-title"> Title</label>
 
         <input type="checkbox" name="search-content" id="search-content">
@@ -36,17 +36,17 @@
         <hr>
 
         <h6>Search specificity?</h6>
-        <input type="checkbox" name="search-prefix" id="search-prefix">
+        <input type="checkbox" name="search-prefix" id="search-prefix" checked="True">
         <label for="search-prefix"> Anything before</label>
 
-        <input type="checkbox" name="search-suffix" id="search-suffix">
+        <input type="checkbox" name="search-suffix" id="search-suffix" checked="True">
         <label for="search-suffix"> Anything after</label>
 
         <input onclick=disable_anythings() type="checkbox" name="search-exact" id="search-exact">
         <label for="search-exact"> Exact </label>
   </div>
 
-  <h6>
+  <h6 class="pt-2 pb-2">
       {{ post_count }} results {% if post_count > 0 %} <span style="font-size: small;">found in {{ "%.2fs"|format(query_time) }}</span> {% endif %}
   </h6>
   
@@ -81,7 +81,48 @@
 
     window.onload = (event) => {
         document.getElementById("search-input").value = "{{ clean_search_term }}";
-        console.log('page is fully loaded');
+        
+        // Lets grab the query string from the URL so we can update the checkboxes accordingly
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        // Im really not sure that this is all that readble.. 
+        // let checkbox_loop_obj = {contentq: 'search-content', userq: 'search-user', tagq: 'search-tag', titleq: 'search-title'};
+        // // Loop over the different checkboxes and check if they should be active
+        // for (const key in checkbox_loop_obj) {
+        //     if (checkbox_loop_obj.hasOwnProperty(key)) {
+        //         const element = checkbox_loop_obj[key];
+                
+        //         // If the url param exists, check the checkbox while also unchecking the default title box
+        //         if (urlParams.get(key)) {
+        //             document.getElementById(element).checked = true;
+        //             document.getElementById("search-title").checked = false;
+
+        //             // However if the title query is true, then we should recheck it!
+        //             if (key == 'titleq') {
+        //                 // We check the title search box to true because if we got to here - it exists in the URL
+        //                 document.getElementById(element).checked = true;
+        //             }
+        //         } 
+        //     }
+        // }
+
+        // Was this more readable than the loop? Hmm probably...
+        if (urlParams.get('contentq')) {
+            document.getElementById("search-content").checked = true;
+            document.getElementById("search-title").checked = false;
+        }
+        if (urlParams.get('userq')) {
+            document.getElementById("search-user").checked = true;
+            document.getElementById("search-title").checked = false;
+        }
+        if (urlParams.get('tagq')) {
+            document.getElementById("search-tags").checked = true;
+            document.getElementById("search-title").checked = false;
+        }
+        if (urlParams.get('titleq')) {
+            document.getElementById("search-title").checked = true;
+        }
     };
     
     // Handle the enter key press on the input box then send off the query
@@ -94,7 +135,23 @@
     // This is used to capture the event which sends off the search query from the input box
     function submit_search() {
         let search_input = document.getElementById("search-input").value;
-        window.location.href = `/search?searchq=${search_input}`;
+
+        additional_query_options = ""
+        
+        if (document.getElementById("search-title").checked) {
+            additional_query_options += "titleq=True&"
+        }
+        if (document.getElementById("search-content").checked) {
+            additional_query_options += "contentq=True&"
+        }
+        if (document.getElementById("search-user").checked) {
+            additional_query_options += "userq=True&"
+        }
+        if (document.getElementById("search-tags").checked) {
+            additional_query_options += "tagq=True"
+        }
+
+        window.location.href = `/search?searchq=${search_input}&` + additional_query_options;
     }
 
     // Toggles the opening css class for the advanced options menu
@@ -112,6 +169,21 @@
             document.getElementById("search-suffix").disabled = false;
         }
     }
+
+    function format_time_stamps(time_stamps) {
+        for (let index = 0; index < time_stamps.length; index++) {
+            const element = time_stamps[index];
+            const time_value = element.getAttribute('value');
+            const local_date = new Date(time_value + 'Z');
+            let time_text = posted_time_text(local_date)
+
+            element.textContent = time_text;
+            element.title = `Posted at: ${local_date.toLocaleString()}`;
+        }
+    }
+        
+  const time_stamps = document.getElementsByClassName("time-stamp")
+  format_time_stamps(time_stamps);
 
 </script>
 

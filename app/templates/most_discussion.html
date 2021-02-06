@@ -1,0 +1,13 @@
+<section class="content-section">
+    <h4>Most Commented</h4>
+    <hr>
+    <div id="most-comments">
+        {% for post in most_comments %}
+        <a href="{{ url_for('posts.post', post_id=post.id) }}" class="pt-4" style="text-decoration: none; color:black;">
+            <h6 style="padding-top: 0.1rem; font-weight: 400; text-decoration: none;">
+                {{ post.title }} <small style="text-decoration: none !important;" >({{ post.comments_count }} comments)</small>
+            </h6>  
+        </a>
+        {% endfor %}
+    </div>
+</section>

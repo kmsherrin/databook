@@ -75,6 +75,9 @@ class Post(db.Model):
 
     def number_of_likes(self):
         return Like.query.filter(Like.post_id == self.id).count()
+    
+    def get_author(self):
+        return self.user.username
 
 class Dataset(db.Model):
     id = db.Column(db.Integer, primary_key=True)

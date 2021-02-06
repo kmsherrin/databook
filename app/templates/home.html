@@ -22,6 +22,9 @@
     <section class="top-tags">
       {% include 'top_users.html' %}
     </section>
+    <section class="top-tags">
+      {% include 'most_discussion.html' %}
+    </section>
   </aside>
   
   <section id="top-posts" style="height: 100%;">
@@ -95,12 +98,10 @@
 
 </div>
 
-<script src="{{ url_for('static', filename='utility.js') }}"></script>
+<script rel="preload" src="{{ url_for('static', filename='utility.js') }}"></script>
 
 <script>
-  const time_stamps = document.getElementsByClassName("time-stamp")
-  const time_now = new Date();
-
+  function format_time_stamps(time_stamps) {
   for (let index = 0; index < time_stamps.length; index++) {
     const element = time_stamps[index];
     const time_value = element.getAttribute('value');
@@ -110,6 +111,10 @@
     element.textContent = time_text;
     element.title = `Posted at: ${local_date.toLocaleString()}`;
   }
+}
+  
+  const time_stamps = document.getElementsByClassName("time-stamp")
+  format_time_stamps(time_stamps);
 
   // Handle the enter key press on the input box then send off the query
   document.getElementById("search-input").addEventListener("keyup", function(event) {
@@ -121,7 +126,7 @@
   // This is used to capture the event which sends off the search query from the input box
   function submit_search() {
     let search_input = document.getElementById("search-input").value;
-    window.location.href = `/search?searchq=${search_input}`;
+    window.location.href = `/search?searchq=${search_input}&titleq=True`;
   }
 
 </script>
