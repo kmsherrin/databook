@@ -4,30 +4,54 @@
 
 
 
-  <h1>Search</h1>
+  <h1>Search Posts</h1>
 
   <div class="row d-flex align-items-center justify-content-center mt-3 mb-3">
     <div class="col-lg-7 d-flex align-items-center justify-content-center">
         <div class="search-container">
           <input id="search-input" class="search-bar" type="text" placeholder="Search">
-          <a href="" class="search-cog" title="Advanced Search" >
+          <span onclick=expand_advanced() class="search-cog" title="Advanced Search">
             ⚙ 
-          </a>
+          </span>
         </div>
         <button onclick=submit_search() class="btn btn-outline-primary" title="Search" style="display: block; padding: 0.4rem 1.2rem 0.4rem 1.2rem;"><span>🔍</span></button></input> 
     </div>
   </div>
 
-  <div id="advanced_search">
+  <div id="advanced_search" class="advanced">
+        <h6>Search what?</h6>
+        
+        <input type="checkbox" name="search-title" id="search-title">
+        <label for="search-title"> Title</label>
 
+        <input type="checkbox" name="search-content" id="search-content">
+        <label for="search-content"> Content</label>
+
+        <input type="checkbox" name="search-user" id="search-user">
+        <label for="search-user"> User</label>
+
+        <input type="checkbox" name="search-tags" id="search-tags">
+        <label for="search-tags"> Tags</label>
+
+        <hr>
+
+        <h6>Search specificity?</h6>
+        <input type="checkbox" name="search-prefix" id="search-prefix">
+        <label for="search-prefix"> Anything before</label>
+
+        <input type="checkbox" name="search-suffix" id="search-suffix">
+        <label for="search-suffix"> Anything after</label>
+
+        <input onclick=disable_anythings() type="checkbox" name="search-exact" id="search-exact">
+        <label for="search-exact"> Exact </label>
   </div>
 
-
   <h6>
-      {{ post_count }} results <span style="font-size: small;">found in {{ "%.2fs"|format(query_time) }}</span> 
+      {{ post_count }} results {% if post_count > 0 %} <span style="font-size: small;">found in {{ "%.2fs"|format(query_time) }}</span> {% endif %}
   </h6>
+  
   {% if posts.items|length < 1 %}
-  <div class="col-12 d-flex justify-content-center align-items-center mt-5">
+  <div class="col-12 d-flex justify-content-center mt-5" style="min-height: 63vh;">
     <span> There doesn't seem to be any posts here 🙇‍♂️ </span>
   </div>
   {% else %} 
@@ -59,10 +83,34 @@
         document.getElementById("search-input").value = "{{ clean_search_term }}";
         console.log('page is fully loaded');
     };
+    
+    // Handle the enter key press on the input box then send off the query
+    document.getElementById("search-input").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            submit_search()
+        }
+    })
 
+    // This is used to capture the event which sends off the search query from the input box
     function submit_search() {
         let search_input = document.getElementById("search-input").value;
         window.location.href = `/search?searchq=${search_input}`;
+    }
+
+    // Toggles the opening css class for the advanced options menu
+    function expand_advanced() {
+        document.getElementById("advanced_search").classList.toggle("advanced-open");
+    }
+
+    // This is used to disable/re-enable the checkboxes if the exact match is ticked
+    function disable_anythings() {
+        if (document.getElementById("search-exact").checked) {
+            document.getElementById("search-prefix").disabled = true;
+            document.getElementById("search-suffix").disabled = true;
+        } else {
+            document.getElementById("search-prefix").disabled = false;
+            document.getElementById("search-suffix").disabled = false;
+        }
     }
 
 </script>

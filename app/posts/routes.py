@@ -112,8 +112,10 @@ def tagged_post(tag):
     per_page = request.args.get('per-page', 5, type=int)
 
     posts = Post.query.join(Tag).filter_by(tag=tag).order_by(Post.date_posted.desc()).paginate(per_page=per_page, page=page)
+    post_count = Post.query.join(Tag).filter_by(tag=tag).count()
+    number_by_user = Post.query.join(Tag).filter_by(tag=tag).filter_by(user=current_user).count()
 
-    return render_template('tag_posts.html', title=f'{tag} Posts', tag=tag, posts=posts)
+    return render_template('tag_posts.html', title=f'{tag} Posts', tag=tag, posts=posts, post_count=post_count, number_by_user=number_by_user)
 
 
 @posts.route('/post/<int:post_id>/likes')

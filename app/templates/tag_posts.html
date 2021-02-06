@@ -4,6 +4,17 @@
 <section id="top-posts">
 
     <h1 class="pt-3 pb-3"><span class="text-highlight">{{ tag }}</span> posts</h1>
+
+    <h6 class="pt-2 pb-2">
+      There is {{ post_count }} posts with the <b>{{ tag }}</b> tag!
+
+      {% if current_user.is_authenticated %}
+        {% if number_by_user > 0 %}
+          <span>You have contributed {{ number_by_user }}!</span>
+        {% endif %}
+      {% endif %}
+    </h6>
+    
     {% for post in posts.items %}
           
       {% include 'post.html' %}
@@ -14,9 +25,9 @@
       {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
         {% if page_num %}
             {% if posts.page == page_num %}
-            <a class="btn btn-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num) }}"> {{ page_num }} </a>
+            <a class="btn btn-secondary btn-sm mb-4" href="{{ url_for('posts.tagged_post', tag=tag, page=page_num) }}"> {{ page_num }} </a>
             {% else %}
-            <a class="btn btn-outline-secondary btn-sm mb-4" href="{{ url_for('main.home', page=page_num) }}"> {{ page_num }} </a>
+            <a class="btn btn-outline-secondary btn-sm mb-4" href="{{ url_for('posts.tagged_post', tag=tag, page=page_num) }}"> {{ page_num }} </a>
             {% endif %}
         {% else %}
             ...

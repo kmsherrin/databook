@@ -90,12 +90,16 @@ def search():
     wildcard_prefix = request.args.get('wild-pre', True, type=bool)
     wildcard_suffix = request.args.get('wild-suf', True, type=bool)
 
+    title_search = request.args.get('titleq', True, type=bool)
+    content_search = request.args.get('contentq', False, type=bool)
+    user_search = request.args.get('userq', False, type=bool)
+    tag_search = request.args.get('tagq', False, type=bool)
+
     if search_term != '':
         if wildcard_prefix:
             search_term = '%' + search_term
         if wildcard_suffix:
             search_term = search_term + '%'
-
 
     posts = []
     st = time.time()
