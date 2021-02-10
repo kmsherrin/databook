@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="content-section">
+<div class="row d-flex justify-content-center">
+    <div class="content-section col-md-6">
         <form action="" method="POST">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4"> Sign Up</legend>
+                <legend class="border-bottom mb-4 mont"> Sign Up</legend>
 
                 <div class="form-group mb-3">
                     {{ form.username.label(class="form-control-label") }}
@@ -71,5 +72,5 @@
             <a href="{{ url_for('users.login')}}"> Sign In</a>
         </small>
     </div>
-
+</div>
 {% endblock content %}

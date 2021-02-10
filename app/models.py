@@ -10,7 +10,7 @@ def load_user(user_id):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.png')
     password = db.Column(db.String(60), nullable=False)
@@ -40,6 +40,11 @@ class User(db.Model, UserMixin):
 
     def has_liked_post(self, post):
         return Like.query.filter(Like.user_id == self.id, Like.post_id == post.id).count() > 0
+    
+    def set_name(self, new_name):
+        self.name = new_name
+        db.session.add(self)
+        db.session.commit()
 
     @staticmethod
     def verify_reset_token(token):
@@ -53,8 +58,8 @@ class User(db.Model, UserMixin):
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(120), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    title = db.Column(db.String(120), nullable=False, index=True)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, index=True)
     content = db.Column(db.Text, nullable=False)
     
     category = db.Column(db.String(100), nullable=False, default="General")

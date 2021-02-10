@@ -6,9 +6,18 @@ Set up the configuration settings for the flask app, this class is passed into t
 
 import os
 
+class TestConfig:
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_SQLALCHEMY_DATABASE_URI')
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
