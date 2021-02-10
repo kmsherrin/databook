@@ -21,7 +21,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt  
       - name: Run tests with pytest
-        env:
-          TEST_SQLALCHEMY_DATABASE_URI: ${{ secrets.TEST_SQLALCHEMY_DATABASE_URI }}
         run: |
           python -m pytest
+        env:
+          TEST_SQLALCHEMY_DATABASE_URI: ${{ secrets.TEST_SQLALCHEMY_DATABASE_URI }}
