@@ -35,11 +35,10 @@ def _db(app):
     database connection.
     '''
     db = SQLAlchemy(app=app)
-    
-    def teardown():
-        db.drop_all()
-
     db.drop_all()
     db.create_all()
+
+    def teardown():
+        db.drop_all()
 
     return db
