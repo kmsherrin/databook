@@ -1,6 +1,5 @@
 from app.models import User
 
-
 def test_create_user(_db):
     print(vars(_db))
     # user = User(username='test', email='test', password='test')
