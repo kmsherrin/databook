@@ -1,3 +1,5 @@
+![CI Build](https://github.com/kmsherrin/databook/workflows/Run%20Tests/badge.svg)
+
 ## Intermediate Flask project putting together a slight social network type of site focused on data and collaboration (maybe?)
 
 This was a intermediate project for testing and learning some things that I hadn't previously completed. Some of these things are:
