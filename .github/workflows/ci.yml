@@ -1,4 +1,6 @@
 name: Run Tests
+environment: databook-live
+
 on:
   push:
     branches:
