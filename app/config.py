@@ -8,7 +8,6 @@ import os
 
 class TestConfig:
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    print('This is a test of the environemnt variables..' + str(os.environ.get('CI')))
     if os.environ.get('CI') == True:
         SQLALCHEMY_DATABASE_URI = os.environ.get('INPUT_TEST_SQLALCHEMY_DATABASE_URI')
     else:
